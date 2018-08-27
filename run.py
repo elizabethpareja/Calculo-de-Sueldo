@@ -8,9 +8,143 @@ app = Flask(__name__, static_url_path='/static')
 @app.route('/index', methods=["POST", "GET"])
 def index():
 	if request.method == "POST":
-		sueldo = request.form["sueldo"]
-		afp = request.form["afp"]
+
+		if "revBsueldo" in request.form:
+			revBsueldo = request.form["revBsueldo"]
+			try:
+				revBsueldo = int(revBsueldo)
+				sueldoliquido = calculaLiquido(revBsueldo)
+				return render_template('index.html',sueldoliquido=sueldoliquido)
+			except ValueError:
+				return render_template('index.html',ValueError='ValueError')
+
+		elif "revLsueldo" in request.form:
+			revLsueldo = request.form["revLsueldo"]
+			try:
+				revLsueldo = int(revLsueldo)
+				sueldobruto = calculaBruto(revLsueldo)
+				return render_template('index.html',sueldobruto=sueldobruto)
+			except ValueError:
+				return render_template('index.html',ValueError='ValueError')
+
 	return render_template('index.html')
+
+def calculaLiquido(sueldo):
+	SueldoBruto = sueldo
+	Factor = ""
+	CantidadRebajar = ""
+	if sueldo>= 0 and sueldo <= 646920: 
+		Factor = 0
+		CantidadRebajar = 0
+
+	if sueldo>= 646921 and sueldo <= 1437600: 
+		Factor = 0.04
+		CantidadRebajar = 25876.80
+
+	if sueldo>= 1437600.01 and sueldo <= 2396000: 
+		Factor = 0.08
+		CantidadRebajar = 83380.80
+
+	if sueldo>= 2396000.01 and sueldo <= 3354400: 
+		Factor = 0.135
+		CantidadRebajar = 215160.80
+
+	if sueldo>= 3354400.01 and sueldo <= 4312800: 
+		Factor = 0.23
+		CantidadRebajar = 533828.80
+
+	if sueldo>= 4312800.01 and sueldo <= 5750400: 
+		Factor = 0.304
+		CantidadRebajar = 852976
+
+	if sueldo>= 5750400.01: 
+		Factor = 0.35
+		CantidadRebajar = 1117494.40
+
+
+
+	afp = request.form["afp"]
+	if afp == 'Capital' :
+		afp = 12.97
+	elif afp == 'Cuprum' :
+		afp = 12.97
+	elif afp == 'Habitat' :
+		afp = 12.80
+	elif afp == 'PlanVital' :
+		afp = 12.69
+	elif afp == 'ProVida' :
+		afp = 12.98
+	elif afp == 'Modelo' :
+		afp = 12.30
+
+	DescuentoSalud = SueldoBruto * (7/100)
+
+	DescuentoPrevisional = SueldoBruto *( afp/100) 
+
+	SeguroCesantia = SueldoBruto * (0.6/100)
+
+	LiquidoImponible = SueldoBruto - (DescuentoSalud + DescuentoPrevisional + SeguroCesantia)
+
+	ImpuestoRenta = (LiquidoImponible * Factor) - CantidadRebajar 
+
+
+	SueldoLiquido = LiquidoImponible - ImpuestoRenta 
+
+	return SueldoLiquido
+
+def calculaBruto(sueldo):
+	SueldoLiquido = sueldo
+	Factor = ""
+	CantidadRebajar = ""
+
+	ImpuestoRenta = request.form["ImpuestoRenta"]
+	if ImpuestoRenta == '1ro': 
+		Factor = 0
+		CantidadRebajar = 0
+
+	elif ImpuestoRenta == '2do': 
+		Factor = 0.04
+		CantidadRebajar = 25876.80
+
+	elif ImpuestoRenta == '3ero': 
+		Factor = 0.08
+		CantidadRebajar = 83380.80
+
+	elif ImpuestoRenta == '4to': 
+		Factor = 0.135
+		CantidadRebajar = 215160.80
+
+	elif ImpuestoRenta == '5to': 
+		Factor = 0.23
+		CantidadRebajar = 533828.80
+
+	elif ImpuestoRenta == '6to': 
+		Factor = 0.304
+		CantidadRebajar = 852976
+
+	elif ImpuestoRenta == '7mo': 
+		Factor = 0.35
+		CantidadRebajar = 1117494.40
+
+	afp = request.form["afp"]
+	if afp == 'Capital' :
+		afp = 12.97
+	elif afp == 'Cuprum' :
+		afp = 12.97
+	elif afp == 'Habitat' :
+		afp = 12.80
+	elif afp == 'PlanVital' :
+		afp = 12.69
+	elif afp == 'ProVida' :
+		afp = 12.98
+	elif afp == 'Modelo' :
+		afp = 12.30
+
+	SueldoBruto = (100*(SueldoLiquido + CantidadRebajar)) / ((92.4-afp)*(1-Factor))
+
+
+
+	return SueldoBruto
 
 if __name__ == '__main__':
 	app.run(debug=True,host=host,port=port)
