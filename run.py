@@ -48,7 +48,7 @@ def calculaLiquido(sueldo):
 
 	DescuentoSalud = SueldoBruto * (7/100)
 
-	DescuentoPrevisional = SueldoBruto *( afp/100) 
+	DescuentoPrevisional = SueldoBruto * (afp/100) 
 
 	SeguroCesantia = SueldoBruto * (0.6/100)
 
