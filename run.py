@@ -12,7 +12,7 @@ def index():
 		if "revBsueldo" in request.form:
 			revBsueldo = request.form["revBsueldo"]
 			try:
-				revBsueldo = int(revBsueldo)
+				revBsueldo = float(revBsueldo)
 				sueldoliquido = calculaLiquido(revBsueldo)
 				return render_template('index.html',sueldoliquido=sueldoliquido)
 			except ValueError:
@@ -21,7 +21,7 @@ def index():
 		elif "revLsueldo" in request.form:
 			revLsueldo = request.form["revLsueldo"]
 			try:
-				revLsueldo = int(revLsueldo)
+				revLsueldo = float(revLsueldo)
 				sueldobruto = calculaBruto(revLsueldo)
 				return render_template('index.html',sueldobruto=sueldobruto)
 			except ValueError:
@@ -31,37 +31,6 @@ def index():
 
 def calculaLiquido(sueldo):
 	SueldoBruto = sueldo
-	Factor = ""
-	CantidadRebajar = ""
-	if sueldo>= 0 and sueldo <= 646920: 
-		Factor = 0
-		CantidadRebajar = 0
-
-	if sueldo>= 646921 and sueldo <= 1437600: 
-		Factor = 0.04
-		CantidadRebajar = 25876.80
-
-	if sueldo>= 1437600.01 and sueldo <= 2396000: 
-		Factor = 0.08
-		CantidadRebajar = 83380.80
-
-	if sueldo>= 2396000.01 and sueldo <= 3354400: 
-		Factor = 0.135
-		CantidadRebajar = 215160.80
-
-	if sueldo>= 3354400.01 and sueldo <= 4312800: 
-		Factor = 0.23
-		CantidadRebajar = 533828.80
-
-	if sueldo>= 4312800.01 and sueldo <= 5750400: 
-		Factor = 0.304
-		CantidadRebajar = 852976
-
-	if sueldo>= 5750400.01: 
-		Factor = 0.35
-		CantidadRebajar = 1117494.40
-
-
 
 	afp = request.form["afp"]
 	if afp == 'Capital' :
@@ -85,10 +54,44 @@ def calculaLiquido(sueldo):
 
 	LiquidoImponible = SueldoBruto - (DescuentoSalud + DescuentoPrevisional + SeguroCesantia)
 
+	Factor = ""
+	CantidadRebajar = ""
+
+	if LiquidoImponible>= 0 and LiquidoImponible <= 646920: 
+		Factor = 0
+		CantidadRebajar = 0
+
+	elif LiquidoImponible>= 646921 and LiquidoImponible <= 1437600: 
+		Factor = 0.04
+		CantidadRebajar = 25876.80
+
+	elif LiquidoImponible>= 1437600.01 and LiquidoImponible <= 2396000: 
+		Factor = 0.08
+		CantidadRebajar = 83380.80
+
+	elif LiquidoImponible>= 2396000.01 and LiquidoImponible <= 3354400: 
+		Factor = 0.135
+		CantidadRebajar = 215160.80
+
+	elif LiquidoImponible>= 3354400.01 and LiquidoImponible <= 4312800: 
+		Factor = 0.23
+		CantidadRebajar = 533828.80
+
+	elif LiquidoImponible>= 4312800.01 and LiquidoImponible <= 5750400: 
+		Factor = 0.304
+		CantidadRebajar = 852976
+
+	elif LiquidoImponible>= 5750400.01: 
+		Factor = 0.35
+		CantidadRebajar = 1117494.40
+
+
 	ImpuestoRenta = (LiquidoImponible * Factor) - CantidadRebajar 
 
 
 	SueldoLiquido = LiquidoImponible - ImpuestoRenta 
+
+
 
 	return SueldoLiquido
 
