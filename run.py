@@ -100,34 +100,34 @@ def calculaBruto(sueldo):
 	Factor = ""
 	CantidadRebajar = ""
 
-	ImpuestoRenta = request.form["ImpuestoRenta"]
-	if ImpuestoRenta == '1ro': 
+	if SueldoLiquido <=646920.00: 
 		Factor = 0
 		CantidadRebajar = 0
 
-	elif ImpuestoRenta == '2do': 
+	if SueldoLiquido>= 646920.0096 and SueldoLiquido <=1405972.8 : 
 		Factor = 0.04
 		CantidadRebajar = 25876.80
 
-	elif ImpuestoRenta == '3ero': 
+	elif SueldoLiquido>= 1405972.8092 and SueldoLiquido <= 2287700.8: 
 		Factor = 0.08
 		CantidadRebajar = 83380.80
 
-	elif ImpuestoRenta == '4to': 
+	elif SueldoLiquido>= 2287700.80865 and SueldoLiquido <= 3116716.8: 
 		Factor = 0.135
 		CantidadRebajar = 215160.80
 
-	elif ImpuestoRenta == '5to': 
+	elif SueldoLiquido>= 3116716.8072 and SueldoLiquido <= 3854684.8: 
 		Factor = 0.23
 		CantidadRebajar = 533828.80
 
-	elif ImpuestoRenta == '6to': 
+	elif SueldoLiquido>= 3854684.80696 and SueldoLiquido <= 4855254.4: 
 		Factor = 0.304
 		CantidadRebajar = 852976
 
-	elif ImpuestoRenta == '7mo': 
+	elif SueldoLiquido>= 4855254.4065: 
 		Factor = 0.35
 		CantidadRebajar = 1117494.40
+
 
 	afp = request.form["afp"]
 	if afp == 'Capital' :
@@ -143,7 +143,9 @@ def calculaBruto(sueldo):
 	elif afp == 'Modelo' :
 		afp = 12.30
 
-	SueldoBruto = (100*(SueldoLiquido + CantidadRebajar)) / ((92.4-afp)*(1-Factor))
+	LiquidoImponible = (SueldoLiquido - CantidadRebajar) / (1-Factor)
+
+	SueldoBruto = LiquidoImponible / (1- (7/100 + afp/100 + 0.6/100) ) 
 
 
 
