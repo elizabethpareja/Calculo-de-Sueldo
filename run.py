@@ -13,6 +13,8 @@ def index():
 			revBsueldo = request.form["revBsueldo"]
 			try:
 				revBsueldo = float(revBsueldo)
+				if revBsueldo < 0:
+					return render_template('index.html',ValueError='ValueError')
 				sueldoliquido = calculaLiquido(revBsueldo)
 				return render_template('index.html',sueldoliquido=sueldoliquido)
 			except ValueError:
@@ -22,6 +24,8 @@ def index():
 			revLsueldo = request.form["revLsueldo"]
 			try:
 				revLsueldo = float(revLsueldo)
+				if revLsueldo < 0:
+					return render_template('index.html',ValueError='ValueError')
 				sueldobruto = calculaBruto(revLsueldo)
 				return render_template('index.html',sueldobruto=sueldobruto)
 			except ValueError:
