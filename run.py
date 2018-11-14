@@ -1,7 +1,7 @@
 from flask import render_template, request, session, redirect, url_for, Flask
 
 host = "0.0.0.0"
-port = 80
+port = 5613
 app = Flask(__name__, static_url_path='/static')
 
 @app.route('/', methods=["POST", "GET"])
